@@ -36,7 +36,6 @@ let ssl = url.protocol.startsWith('https')
 let address = url.hostname
 let port = ssl ? '443' : '80'
 let uri = url.pathname ? url.pathname : '/'
-
 let body = args.body
 let method = 'body' in args ? 'post' : 'get'
 let ammo_type = 'body' in args ? 'uripost' : 'uri'
