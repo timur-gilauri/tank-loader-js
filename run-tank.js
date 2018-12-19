@@ -35,22 +35,23 @@ let url = urlParse(args.uri, true)
 let ssl = url.protocol.startsWith('https')
 let address = url.hostname
 let port = ssl ? '443' : '80'
-let uri = url.pathname
+let uri = url.pathname ? url.pathname : '/'
 
 let body = args.body
-let method = args.method
-args.headers['Host'] = address
-let headers = prepareHeaders(args.headers)
-if (!method && body) {
-  method = 'post'
-} else if (!method && !body) {
-  method = 'get'
+let method = 'body' in args ? 'post' : 'get'
+let ammo_type = 'body' in args ? 'uripost' : 'uri'
+
+if (!('headers' in args)) {
+  args.headers = {}
 }
+args.headers['Host'] = address
+
+let headers = prepareHeaders(args.headers)
 
 // Добавялем в конфиг параметры запроса
 resultYaml['phantom'] = {
   ...resultYaml['phantom'],
-  ammofile, address, ssl, port,
+  ammo_type, ammofile, address, ssl, port,
 }
 
 let ammo = 'body' in args ? makePostAmmo(method, uri, headers, body) : makeAmmo(method, uri, headers)

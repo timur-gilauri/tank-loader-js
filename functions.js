@@ -52,7 +52,7 @@ function prepareHeaders (headers) {
   for (let header in headers) {
     if (!headers.hasOwnProperty(header)) continue
 
-    result += `[${header}:${headers[header]}]\n`
+    result += `[${header}: ${headers[header]}]\r\n`
   }
   return result
 }
@@ -62,7 +62,7 @@ function makeAmmo (method, uri, headers) {
 }
 
 function makePostAmmo (method, uri, headers, body) {
-  return `${headers}[Content-Length: ${body.length}]${body.length} ${uri}\r\n\r\n${body}`
+  return `${headers}[Content-Length: ${body.length}]\r\n${body.length} ${uri}\r\n${body}`
 }
 
 function spread (obj, add) {
