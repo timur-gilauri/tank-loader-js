@@ -4,10 +4,10 @@ const {spawn} = require('child_process')
 const urlParse = require('url-parse')
 const readYaml = require('read-yaml')
 const writeYaml = require('write-yaml')
-const loadTemplate = readYaml.sync(path.resolve(__dirname, './loadTemplate.yaml'))
+const loadTemplate = readYaml.sync(path.resolve(__dirname, './src/template.yaml'))
 const loadYamlName = 'load.yaml'
 const ammofile = 'ammo.txt'
-let {getYamlArguments, prepareHeaders, makeAmmo, makePostAmmo, spread} = require('./functions')
+let {getYamlArguments, prepareHeaders, makeAmmo, makePostAmmo, spread} = require('./src/functions')
 
 const AMMO_OPTIONS = ['uri', 'headers', 'body', 'method']
 
