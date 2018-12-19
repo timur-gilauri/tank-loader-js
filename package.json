@@ -13,5 +13,12 @@
     "read-yaml": "^1.1.0",
     "url-parse": "^1.4.4",
     "write-yaml": "^1.0.0"
+  },
+  "bin": {
+    "tank-loader-js": "index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timur-gilauri/tank-loader-js.git"
   }
 }
