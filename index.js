@@ -64,7 +64,7 @@ try {
   console.log(`error when write load ${e}`)
 }
 
-const tank = spawn('yandex-tank', ['-c', loadYamlName])
+const tank = spawn('yandex-tank', ['-c', path.resolve(__dirname, `./${loadYamlName}`)])
 
 console.log('Starting tank')
 
