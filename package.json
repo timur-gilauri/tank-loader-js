@@ -1,7 +1,8 @@
 {
-  "name": "tank-loader",
+  "name": "tank-loader-js",
   "version": "1.0.0",
   "description": "Package that runs yandex-tank from command line",
+  "homepage": "https://github.com/timur-gilauri/tank-loader-js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
