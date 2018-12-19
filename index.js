@@ -9,6 +9,8 @@ const writeYaml = require('write-yaml')
 const loadTemplate = readYaml.sync(path.resolve(__dirname, './src/template.yaml'))
 const loadYamlName = 'load.yaml'
 const ammofile = 'ammo.txt'
+const ammofilePath = path.resolve(__dirname, `./${ammofile}`)
+const loadYamlPath = path.resolve(__dirname, `./${loadYamlName}`)
 let {getYamlArguments, prepareHeaders, makeAmmo, makePostAmmo, spread} = require('./src/functions')
 
 const AMMO_OPTIONS = ['uri', 'headers', 'body', 'method']
@@ -52,19 +54,20 @@ let headers = prepareHeaders(args.headers)
 // Добавялем в конфиг параметры запроса
 resultYaml['phantom'] = {
   ...resultYaml['phantom'],
-  ammo_type, ammofile, address, ssl, port,
+  ammofile: ammofilePath,
+  ammo_type, address, ssl, port,
 }
 
 let ammo = 'body' in args ? makePostAmmo(method, uri, headers, body) : makeAmmo(method, uri, headers)
 
 try {
-  fs.writeFileSync(path.resolve(__dirname, `./${ammofile}`), ammo)
-  writeYaml.sync(path.resolve(__dirname, `./${loadYamlName}`), resultYaml)
+  fs.writeFileSync(ammofilePath, ammo)
+  writeYaml.sync(loadYamlPath, resultYaml)
 } catch (e) {
   console.log(`error when write load ${e}`)
 }
 
-const tank = spawn('yandex-tank', ['-c', path.resolve(__dirname, `./${loadYamlName}`)])
+const tank = spawn('yandex-tank', ['-c', loadYamlPath])
 
 console.log('Starting tank')
 
@@ -79,8 +82,8 @@ tank.stderr.on('data', (data) => {
 tank.on('close', (code) => {
   console.log(`child process exited with code ${code}`)
   try {
-    fs.unlinkSync(path.resolve(__dirname, `./${ammofile}`))
-    fs.unlinkSync(path.resolve(__dirname, `./${loadYamlName}`))
+    fs.unlinkSync(ammofilePath)
+    fs.unlinkSync(loadYamlPathe)
   } catch (e) {
     console.log(`error when deleting load files`)
   }
