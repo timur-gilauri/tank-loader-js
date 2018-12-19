@@ -1,0 +1,16 @@
+{
+  "name": "tank-loader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "run-tank.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "read-yaml": "^1.1.0",
+    "url-parse": "^1.4.4",
+    "write-yaml": "^1.0.0"
+  }
+}

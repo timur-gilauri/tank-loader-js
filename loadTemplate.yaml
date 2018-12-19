@@ -1,0 +1,10 @@
+phantom:
+  ammo_type: phantom
+  address: 10.10.9.21:9456
+  load_profile:
+    load_type: rps
+    schedule: const(100, 1m)
+console:
+  enabled: true
+telegraf:
+  enabled: false
