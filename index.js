@@ -3,7 +3,7 @@
 const fs = require('fs')
 const os = require('os')
 const path = require('path')
-const {spawn} = require('child_process')
+const {spawn, spawnSync} = require('child_process')
 const urlParse = require('url-parse')
 const readYaml = require('read-yaml')
 const writeYaml = require('write-yaml')
@@ -69,7 +69,7 @@ resultYaml['core'] = {
 resultYaml['phantom'] = {
   ...resultYaml['phantom'],
   ammofile: ammofilePath,
-  cache_dir: testDir,
+  cache_dir: path.join(testDir, path.sep),
   ammo_type, address, ssl, port,
 }
 
@@ -97,7 +97,7 @@ tank.stderr.on('data', (data) => {
 tank.on('close', (code) => {
   console.log(`child process exited with code ${code}`)
   try {
-    fs.rmdirSync(testDir)
+    spawnSync('rm', ['-rf', testDir])
   } catch (e) {
     console.log(`error when deleting load files`, e)
   }
