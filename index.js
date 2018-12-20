@@ -48,7 +48,7 @@ REQUIRED_OPTIONS.forEach(opt => {
   }
 })
 
-if (!args.length || missingReqOptions.length) {
+if (!Object.keys(args).length || missingReqOptions.length) {
   throw new Error(`${missingReqOptions.join(' ')} required options are missing`)
 }
 
