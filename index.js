@@ -1,17 +1,25 @@
 #! /usr/bin/env node
 
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
 const {spawn} = require('child_process')
 const urlParse = require('url-parse')
 const readYaml = require('read-yaml')
 const writeYaml = require('write-yaml')
-const loadTemplate = readYaml.sync(path.resolve(__dirname, './src/template.yaml'))
-const loadYamlName = 'load.yaml'
+
+// Path
+const tmp = os.tmpdir()
+const testDirPrefix = 'tank-test-'
+const testDir = fs.mkdtempSync(path.join(tmp, testDirPrefix))
+const srcPath = path.resolve(__dirname, './src/')
+const loadTemplate = readYaml.sync(path.join(srcPath, 'template.yaml'))
+const {getYamlArguments, prepareHeaders, makeAmmo, makePostAmmo, spread} = require(path.join(srcPath, 'functions'))
+
 const ammofile = 'ammo.txt'
-const ammofilePath = path.resolve(__dirname, `./${ammofile}`)
-const loadYamlPath = path.resolve(__dirname, `./${loadYamlName}`)
-let {getYamlArguments, prepareHeaders, makeAmmo, makePostAmmo, spread} = require('./src/functions')
+const loadYamlName = 'load.yaml'
+const ammofilePath = path.join(testDir, ammofile)
+const loadYamlPath = path.join(testDir, loadYamlName)
 
 const AMMO_OPTIONS = ['uri', 'headers', 'body', 'method']
 
@@ -82,8 +90,7 @@ tank.stderr.on('data', (data) => {
 tank.on('close', (code) => {
   console.log(`child process exited with code ${code}`)
   try {
-    fs.unlinkSync(ammofilePath)
-    fs.unlinkSync(loadYamlPathe)
+    fs.rmdirSync(testDir)
   } catch (e) {
     console.log(`error when deleting load files`)
   }
