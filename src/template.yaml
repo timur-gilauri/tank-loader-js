@@ -4,6 +4,7 @@ phantom:
   load_profile:
     load_type: rps
     schedule: const(100, 1m)
+  use_caching: false
 console:
   enabled: true
 telegraf:
