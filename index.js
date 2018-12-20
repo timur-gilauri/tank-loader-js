@@ -23,7 +23,9 @@ const loadYamlName = 'load.yaml'
 const ammofilePath = path.join(testDir, ammofile)
 const loadYamlPath = path.join(testDir, loadYamlName)
 
-const AMMO_OPTIONS = ['uri', 'headers', 'body', 'method']
+const AMMO_OPTIONS = ['uri', 'headers', 'body']
+const REQUIRED_OPTIONS = ['uri']
+let missingReqOptions = []
 
 let args = process.argv.filter(arg => arg.startsWith('--')).reduce((result, arg) => {
   let pair = arg.split('=')
@@ -40,6 +42,15 @@ let args = process.argv.filter(arg => arg.startsWith('--')).reduce((result, arg)
   }
   return result
 }, {})
+REQUIRED_OPTIONS.forEach(opt => {
+  if (!Object.keys(args).includes(opt)) {
+    missingReqOptions.push(opt)
+  }
+})
+
+if (!args.length || !missingReqOptions.length) {
+  throw new Error(`${missingReqOptions.join(' ')} required options are missing`)
+}
 
 let yamlArguments = getYamlArguments(args, AMMO_OPTIONS)
 
