@@ -69,6 +69,7 @@ resultYaml['core'] = {
 resultYaml['phantom'] = {
   ...resultYaml['phantom'],
   ammofile: ammofilePath,
+  cache_dir: testDir,
   ammo_type, address, ssl, port,
 }
 
@@ -98,6 +99,6 @@ tank.on('close', (code) => {
   try {
     fs.rmdirSync(testDir)
   } catch (e) {
-    console.log(`error when deleting load files`)
+    console.log(`error when deleting load files`, e)
   }
 })
