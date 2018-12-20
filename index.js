@@ -12,6 +12,8 @@ const writeYaml = require('write-yaml')
 const tmp = os.tmpdir()
 const testDirPrefix = 'tank-test-'
 const testDir = fs.mkdtempSync(path.join(tmp, testDirPrefix))
+const logsBaseDirPath = path.join(testDir, 'logs')
+const logsDirPath = path.join(logsBaseDirPath, '/')
 const srcPath = path.resolve(__dirname, './src/')
 const loadTemplate = readYaml.sync(path.join(srcPath, 'template.yaml'))
 const {getYamlArguments, prepareHeaders, makeAmmo, makePostAmmo, spread} = require(path.join(srcPath, 'functions'))
@@ -60,6 +62,10 @@ args.headers['Host'] = address
 let headers = prepareHeaders(args.headers)
 
 // Добавялем в конфиг параметры запроса
+resultYaml['core'] = {
+  artifacts_base_dir: logsBaseDirPath,
+  artifacts_dir: logsDirPath
+}
 resultYaml['phantom'] = {
   ...resultYaml['phantom'],
   ammofile: ammofilePath,
