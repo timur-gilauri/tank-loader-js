@@ -1,13 +1,16 @@
 {
   "name": "tank-loader-js",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Package that runs yandex-tank from command line",
   "homepage": "https://github.com/timur-gilauri/tank-loader-js",
   "main": "index.js",
+  "engines": {
+    "node": ">= 8.6.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Timur Gilauri <timur.gilauri@hotmail.com>",
   "license": "ISC",
   "dependencies": {
     "read-yaml": "^1.1.0",

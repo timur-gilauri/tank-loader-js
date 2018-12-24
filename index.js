@@ -31,6 +31,9 @@ let args = process.argv.filter(arg => arg.startsWith('--')).reduce((result, arg)
   let pair = arg.split('=')
   let key = pair[0].slice(2)
   let value = pair[1]
+  if (!isNaN(Number.parseInt(value))) {
+    value = Number.parseInt(value)
+  }
   if (key === 'headers') {
     if (!(key in result)) {
       result[key] = {}
