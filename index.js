@@ -61,8 +61,8 @@ let resultYaml = spread(loadTemplate, yamlArguments)
 
 let url = urlParse(args.uri, true)
 let ssl = url.protocol.startsWith('https')
-let address = url.hostname
-let port = ssl ? '443' : '80'
+let port = url.port.length ? url.port : (ssl ? '443' : '80')
+let address = `${url.hostname}:${port}`
 let uri = url.pathname ? url.pathname : '/'
 let body = args.body
 let method = 'body' in args ? 'post' : 'get'
@@ -84,7 +84,7 @@ resultYaml['phantom'] = {
   ...resultYaml['phantom'],
   ammofile: ammofilePath,
   cache_dir: path.join(testDir, path.sep),
-  ammo_type, address, ssl, port,
+  ammo_type, address, ssl
 }
 
 let ammo = 'body' in args ? makePostAmmo(method, uri, headers, body) : makeAmmo(method, uri, headers)
