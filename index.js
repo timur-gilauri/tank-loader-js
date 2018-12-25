@@ -76,7 +76,7 @@ args.headers['Host'] = address
 let headers = prepareHeaders(args.headers)
 
 // Добавялем в конфиг параметры запроса
-resultYaml['core'] = {
+resultYaml['tank'] = {
   artifacts_base_dir: logsBaseDirPath,
   artifacts_dir: logsDirPath
 }
