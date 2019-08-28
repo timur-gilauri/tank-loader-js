@@ -1,6 +1,6 @@
 {
   "name": "tank-loader-js",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Package that runs yandex-tank from command line",
   "homepage": "https://github.com/timur-gilauri/tank-loader-js",
   "main": "index.js",
