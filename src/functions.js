@@ -21,13 +21,13 @@ function getYamlArguments (args, AMMO_OPTIONS) {
           if (!(section in result)) {
             result[section] = {
               [subsection]: {
-                [param]: value
-              }
+                [param]: value,
+              },
             }
           } else {
             if (!(subsection in result[section])) {
               result[section][subsection] = {
-                [param]: value
+                [param]: value,
               }
             }
             result[section][subsection][param] = value
@@ -65,26 +65,25 @@ function makePostAmmo (method, uri, headers, body) {
   return `${headers}[Content-Length: ${body.length}]\r\n${body.length} ${uri}\r\n${body}`
 }
 
-function spread (obj, add) {
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      if (typeof obj[key] === 'object') {
-        spread(obj[key], add[key])
+function spread (template, addition) {
+  if (!addition) return template
+
+  for (let prop in template) {
+    if (template.hasOwnProperty(prop) && addition.hasOwnProperty(prop)) {
+      if (typeof template[prop] === 'object') {
+        spread(template[prop], addition[prop])
       } else {
-        obj[key] = add && add[key] ? add[key] : obj[key]
+        template[prop] = addition[prop]
       }
     }
   }
-  if (add) {
-    for (let key in add) {
-      if (add.hasOwnProperty(key)) {
-        if (!(key in obj)) {
-          obj[key] = add[key]
-        }
-      }
+
+  for (let key in addition) {
+    if (addition.hasOwnProperty(key) && !(key in template)) {
+      template[key] = addition[key]
     }
   }
-  return obj
+  return template
 }
 
 module.exports = {
@@ -92,5 +91,5 @@ module.exports = {
   prepareHeaders,
   makeAmmo,
   makePostAmmo,
-  spread
+  spread,
 }
