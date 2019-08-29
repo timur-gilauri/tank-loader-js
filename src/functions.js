@@ -1,3 +1,5 @@
+const CRLF = '\r\n'
+
 function getYamlArguments (args, AMMO_OPTIONS) {
   let result = {}
   for (let arg in args) {
@@ -48,13 +50,9 @@ function getYamlArguments (args, AMMO_OPTIONS) {
 }
 
 function prepareHeaders (headers) {
-  let result = ``
-  for (let header in headers) {
-    if (!headers.hasOwnProperty(header)) continue
-
-    result += `[${header}: ${headers[header]}]\r\n`
-  }
-  return result
+  return Object.entries(headers).reduce((result, entry) => {
+    return `${result}[${entry.join(':')}]${CRLF}`
+  }, ``)
 }
 
 function makeAmmo (method, uri, headers) {
@@ -62,7 +60,7 @@ function makeAmmo (method, uri, headers) {
 }
 
 function makePostAmmo (method, uri, headers, body) {
-  return `${headers}[Content-Length: ${body.length}]\r\n${body.length} ${uri}\r\n${body}`
+  return `${headers}[Content-Length: ${body.length}]${CRLF}${body.length} ${uri}${CRLF}${body}${CRLF}`
 }
 
 function spread (template, addition) {
