@@ -3,7 +3,7 @@
 const fs = require('fs')
 const os = require('os')
 const path = require('path')
-const {spawn, spawnSync} = require('child_process')
+const { spawn, spawnSync } = require('child_process')
 const urlParse = require('url-parse')
 const readYaml = require('read-yaml')
 const writeYaml = require('write-yaml')
@@ -16,7 +16,7 @@ const logsBaseDirPath = path.join(testDir, 'logs')
 const logsDirPath = path.join(logsBaseDirPath, '/')
 const srcPath = path.resolve(__dirname, './src/')
 const loadTemplate = readYaml.sync(path.join(srcPath, 'template.yaml'))
-const {getYamlArguments, prepareHeaders, makeAmmo, makePostAmmo, spread} = require(path.join(srcPath, 'functions'))
+const { getYamlArguments, prepareHeaders, makeAmmo, makePostAmmo, spread } = require(path.join(srcPath, 'functions'))
 
 const ammofile = 'ammo.txt'
 const loadYamlName = 'load.yaml'
@@ -31,7 +31,7 @@ let args = process.argv.filter(arg => arg.startsWith('--')).reduce((result, arg)
   let pair = arg.split('=')
   let key = pair[0].slice(2)
   let value = pair[1]
-  if (!isNaN(Number.parseInt(value))) {
+  if (value.match(/^[0-9]+$/) && !isNaN(Number.parseInt(value))) {
     value = Number.parseInt(value)
   }
   if (key === 'headers') {
@@ -78,13 +78,13 @@ let headers = prepareHeaders(args.headers)
 // Добавялем в конфиг параметры запроса
 resultYaml['core'] = {
   artifacts_base_dir: logsBaseDirPath,
-  artifacts_dir: logsDirPath
+  artifacts_dir     : logsDirPath,
 }
 resultYaml['phantom'] = {
   ...resultYaml['phantom'],
-  ammofile: ammofilePath,
+  ammofile : ammofilePath,
   cache_dir: path.join(testDir, path.sep),
-  ammo_type, address, ssl
+  ammo_type, address, ssl,
 }
 
 let ammo = 'body' in args ? makePostAmmo(method, uri, headers, body) : makeAmmo(method, uri, headers)
