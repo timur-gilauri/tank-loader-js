@@ -49,12 +49,12 @@ module.exports.prepareHeaders = function (headers) {
   }, ``)
 }
 
-module.exports.makeAmmo = function (method, uri, headers) {
-  return `${headers}${uri}`
+module.exports.makeAmmo = function (method, url, headers) {
+  return `${headers}${url}`
 }
 
-module.exports.makePostAmmo = function (method, uri, headers, body) {
-  return `${headers}[Content-Length: ${body.length}]${CRLF}${body.length} ${uri}${CRLF}${body}${CRLF}`
+module.exports.makePostAmmo = function (method, url, headers, body) {
+  return `${headers}[Content-Length: ${body.length}]${CRLF}${body.length} ${url}${CRLF}${body}${CRLF}`
 }
 
 module.exports.authorize = function (url, headers, data, authTokenKeyInResponse) {

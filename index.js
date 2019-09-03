@@ -23,8 +23,8 @@ const loadYamlName = 'load.yaml'
 const ammofilePath = path.join(testDir, ammofile)
 const loadYamlPath = path.join(testDir, loadYamlName)
 
-const AMMO_OPTIONS = ['uri', 'headers', 'body']
-const REQUIRED_OPTIONS = ['uri']
+const AMMO_OPTIONS = ['url', 'headers', 'body']
+const REQUIRED_OPTIONS = ['url']
 let missingReqOptions = []
 
 let args = process.argv.filter(arg => arg.startsWith('--')).reduce((result, arg) => {
@@ -59,7 +59,7 @@ let yamlArguments = getYamlArguments(args, AMMO_OPTIONS)
 
 let resultYaml = spread(loadTemplate, yamlArguments)
 
-let url = urlParse(args.uri, true)
+let url = urlParse(args.url, true)
 let ssl = url.protocol.startsWith('https')
 let port = url.port.length ? url.port : (ssl ? '443' : '80')
 let address = `${url.hostname}:${port}`
