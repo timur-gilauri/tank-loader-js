@@ -1,51 +1,50 @@
 const CRLF = '\r\n'
 const request = require('sync-request')
 
-module.exports.getYamlArguments = function (args, AMMO_OPTIONS) {
+module.exports.getAllArguments = function (args) {
   let result = {}
   for (let arg in args) {
     if (!args.hasOwnProperty(arg)) continue
 
-    if (!AMMO_OPTIONS.includes(arg)) {
-      let value = args[arg]
-      if (value === 'true') {
-        value = true
+    let value = args[arg]
+    if (value === 'true') {
+      value = true
+    }
+    if (value === 'false') {
+      value = false
+    }
+    if (arg.includes('.')) {
+      let parts = arg.split('.').filter(String)
+      if (!parts.length) {
+        continue
       }
-      if (value === 'false') {
-        value = false
-      }
-      if (arg.includes('.')) {
-        let parts = arg.split('.').filter(String)
-        if (!parts.length) {
-          continue
+      if (parts.length > 1) {
+        let startProperty = parts.shift()
+        let endProperty = parts.pop()
+        if (!(startProperty in result)) {
+          result[startProperty] = {}
         }
-        if (parts.length > 1) {
-          let startProperty = parts.shift()
-          let endProperty = parts.pop()
-
-          // skipp options that are haven't to be in .yaml config
-          if (AMMO_OPTIONS.includes(startProperty)) {
-            continue
+        let lastPart = parts.reduce((parent, current) => {
+          if (!(current in parent)) {
+            parent[current] = {}
           }
-          if (!(startProperty in result)) {
-            result[startProperty] = {}
-          }
-          let lastPart = parts.reduce((parent, current) => {
-            if (!(current in parent)) {
-              parent[current] = {}
-            }
-            return parent[current]
-          }, result[startProperty])
-          lastPart[endProperty] = value
-        } else {
-          result[arg] = value
-        }
+          return parent[current]
+        }, result[startProperty])
+        lastPart[endProperty] = value
       } else {
         result[arg] = value
       }
+    } else {
+      result[arg] = value
     }
   }
   return result
+}
+
+module.exports.getYamlOptions = function (allArguments, AMMO_OPTIONS) {
+  let yamlOptions = { ...allArguments }
+  AMMO_OPTIONS.forEach(o => delete (yamlOptions[o]))
+  return yamlOptions
 }
 
 module.exports.prepareHeaders = function (headers) {

@@ -16,7 +16,7 @@ const logsBaseDirPath = path.join(testDir, 'logs')
 const logsDirPath = path.join(logsBaseDirPath, '/')
 const srcPath = path.resolve(__dirname, './src/')
 const loadTemplate = readYaml.sync(path.join(srcPath, 'template.yaml'))
-const { getYamlArguments, prepareHeaders, makeAmmo, makePostAmmo, spread, authorize } = require(path.join(srcPath, 'functions'))
+const { getAllArguments, getYamlOptions, prepareHeaders, makeAmmo, makePostAmmo, spread, authorize } = require(path.join(srcPath, 'functions'))
 
 const ammofile = 'ammo.txt'
 const loadYamlName = 'load.yaml'
@@ -55,31 +55,31 @@ if (!Object.keys(args).length || missingReqOptions.length) {
   throw new Error(`${missingReqOptions.join(' ')} required options are missing`)
 }
 
-let yamlArguments = getYamlArguments(args, AMMO_OPTIONS)
+let allArguments = getAllArguments(args)
+let yamlOptions = getYamlOptions(allArguments, AMMO_OPTIONS)
+let resultYaml = spread(loadTemplate, yamlOptions)
 
-let resultYaml = spread(loadTemplate, yamlArguments)
-
-let url = urlParse(args.url, true)
+let url = urlParse(allArguments.url, true)
 let ssl = url.protocol.startsWith('https')
 let port = url.port.length ? url.port : (ssl ? '443' : '80')
 let address = `${url.hostname}:${port}`
 let uri = url.pathname ? url.pathname : '/'
-let body = args.body
-let method = 'body' in args ? 'post' : 'get'
-let ammo_type = 'body' in args ? 'uripost' : 'uri'
+let body = allArguments.body
+let method = 'body' in allArguments ? 'post' : 'get'
+let ammo_type = 'body' in allArguments ? 'uripost' : 'uri'
 
-if (!('headers' in args)) {
-  args.headers = {}
+if (!('headers' in allArguments)) {
+  allArguments.headers = {}
 }
-args.headers['Host'] = address
+allArguments.headers['Host'] = address
 
-if ('auth' in yamlArguments) {
-  let { url, headers, data, tokenName } = yamlArguments.auth
+if ('auth' in allArguments) {
+  let { url, headers, data, tokenName } = allArguments.auth
   let authorizationToken = authorize(url, headers, data, tokenName)
-  let authHeader = yamlArguments.auth['authHeader'] || yamlArguments.auth['tokenName']
-  args.headers[authHeader] = authorizationToken
+  let authHeader = allArguments.auth['authHeader'] || allArguments.auth['tokenName']
+  allArguments.headers[authHeader] = authorizationToken
 }
-let headers = prepareHeaders(args.headers)
+let headers = prepareHeaders(allArguments.headers)
 
 // Добавялем в конфиг параметры запроса
 resultYaml['core'] = {
