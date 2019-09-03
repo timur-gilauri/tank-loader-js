@@ -67,18 +67,18 @@ let uri = url.pathname ? url.pathname : '/'
 let body = args.body
 let method = 'body' in args ? 'post' : 'get'
 let ammo_type = 'body' in args ? 'uripost' : 'uri'
-let authorizationToken = null
-if ('auth' in yamlArguments) {
-  let { url, headers, data, tokenName } = yamlArguments.auth
-  authorizationToken = authorize(url, headers, data, tokenName)
-}
 
 if (!('headers' in args)) {
   args.headers = {}
 }
 args.headers['Host'] = address
-args[yamlArguments['authHeader'] || yamlArguments.auth['tokenName']] = authorizationToken
 
+if ('auth' in yamlArguments) {
+  let { url, headers, data, tokenName } = yamlArguments.auth
+  let authorizationToken = authorize(url, headers, data, tokenName)
+  let authHeader = yamlArguments.auth['authHeader'] || yamlArguments.auth['tokenName']
+  args.headers[authHeader] = authorizationToken
+}
 let headers = prepareHeaders(args.headers)
 
 // Добавялем в конфиг параметры запроса
