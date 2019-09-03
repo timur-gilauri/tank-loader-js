@@ -22,6 +22,11 @@ module.exports.getYamlArguments = function (args, AMMO_OPTIONS) {
         if (parts.length > 1) {
           let startProperty = parts.shift()
           let endProperty = parts.pop()
+
+          // skipp options that are haven't to be in .yaml config
+          if (AMMO_OPTIONS.includes(startProperty)) {
+            continue
+          }
           if (!(startProperty in result)) {
             result[startProperty] = {}
           }

@@ -23,7 +23,7 @@ const loadYamlName = 'load.yaml'
 const ammofilePath = path.join(testDir, ammofile)
 const loadYamlPath = path.join(testDir, loadYamlName)
 
-const AMMO_OPTIONS = ['url', 'headers', 'body']
+const AMMO_OPTIONS = ['url', 'headers', 'body', 'auth']
 const REQUIRED_OPTIONS = ['url']
 let missingReqOptions = []
 
