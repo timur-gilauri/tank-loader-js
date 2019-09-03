@@ -1,6 +1,7 @@
 const CRLF = '\r\n'
+const request = require('sync-request')
 
-function getYamlArguments (args, AMMO_OPTIONS) {
+module.exports.getYamlArguments = function (args, AMMO_OPTIONS) {
   let result = {}
   for (let arg in args) {
     if (!args.hasOwnProperty(arg)) continue
@@ -14,32 +15,25 @@ function getYamlArguments (args, AMMO_OPTIONS) {
         value = false
       }
       if (arg.includes('.')) {
-        let parts = arg.split('.')
-        let section = arg.split('.')[0]
-
-        if (parts.length > 2) {
-          let subsection = parts[1]
-          let param = parts[2]
-          if (!(section in result)) {
-            result[section] = {
-              [subsection]: {
-                [param]: value,
-              },
-            }
-          } else {
-            if (!(subsection in result[section])) {
-              result[section][subsection] = {
-                [param]: value,
-              }
-            }
-            result[section][subsection][param] = value
+        let parts = arg.split('.').filter(String)
+        if (!parts.length) {
+          continue
+        }
+        if (parts.length > 1) {
+          let startProperty = parts.shift()
+          let endProperty = parts.pop()
+          if (!(startProperty in result)) {
+            result[startProperty] = {}
           }
+          let lastPart = parts.reduce((parent, current) => {
+            if (!(current in parent)) {
+              parent[current] = {}
+            }
+            return parent[current]
+          }, result[startProperty])
+          lastPart[endProperty] = value
         } else {
-          let param = parts[1]
-          if (!(section in result)) {
-            result[section] = {}
-          }
-          result[section][param] = value
+          result[arg] = value
         }
       } else {
         result[arg] = value
@@ -49,18 +43,28 @@ function getYamlArguments (args, AMMO_OPTIONS) {
   return result
 }
 
-function prepareHeaders (headers) {
+module.exports.prepareHeaders = function (headers) {
   return Object.entries(headers).reduce((result, entry) => {
     return `${result}[${entry.join(':')}]${CRLF}`
   }, ``)
 }
 
-function makeAmmo (method, uri, headers) {
+module.exports.makeAmmo = function (method, uri, headers) {
   return `${headers}${uri}`
 }
 
-function makePostAmmo (method, uri, headers, body) {
+module.exports.makePostAmmo = function (method, uri, headers, body) {
   return `${headers}[Content-Length: ${body.length}]${CRLF}${body.length} ${uri}${CRLF}${body}${CRLF}`
+}
+
+module.exports.authorize = function (url, headers, data, authTokenKeyInResponse) {
+  let req = request('POST', url, {
+    headers,
+    json: JSON.parse(data),
+  })
+  let response = JSON.parse(req.getBody('utf8'))
+  return response[authTokenKeyInResponse]
+
 }
 
 function spread (template, addition) {
@@ -84,10 +88,4 @@ function spread (template, addition) {
   return template
 }
 
-module.exports = {
-  getYamlArguments,
-  prepareHeaders,
-  makeAmmo,
-  makePostAmmo,
-  spread,
-}
+module.exports.spread = spread

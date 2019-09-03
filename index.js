@@ -16,7 +16,7 @@ const logsBaseDirPath = path.join(testDir, 'logs')
 const logsDirPath = path.join(logsBaseDirPath, '/')
 const srcPath = path.resolve(__dirname, './src/')
 const loadTemplate = readYaml.sync(path.join(srcPath, 'template.yaml'))
-const { getYamlArguments, prepareHeaders, makeAmmo, makePostAmmo, spread } = require(path.join(srcPath, 'functions'))
+const { getYamlArguments, prepareHeaders, makeAmmo, makePostAmmo, spread, authorize } = require(path.join(srcPath, 'functions'))
 
 const ammofile = 'ammo.txt'
 const loadYamlName = 'load.yaml'
@@ -67,11 +67,17 @@ let uri = url.pathname ? url.pathname : '/'
 let body = args.body
 let method = 'body' in args ? 'post' : 'get'
 let ammo_type = 'body' in args ? 'uripost' : 'uri'
+let authorizationToken = null
+if ('auth' in yamlArguments) {
+  let { url, headers, data, tokenName } = yamlArguments.auth
+  authorizationToken = authorize(url, headers, data, tokenName)
+}
 
 if (!('headers' in args)) {
   args.headers = {}
 }
 args.headers['Host'] = address
+args[yamlArguments['authHeader'] || yamlArguments.auth['tokenName']] = authorizationToken
 
 let headers = prepareHeaders(args.headers)
 
